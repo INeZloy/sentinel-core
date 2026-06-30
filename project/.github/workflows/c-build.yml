@@ -1,0 +1,11 @@
+name: C Build & Test
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Build
+      run: make
+    - name: Run Tests
+      run: make test

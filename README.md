@@ -1,4 +1,5 @@
 In the current version (v1.0), the architecture focuses on Edge Computing. Data is processed locally on the node to ensure maximum response speed and privacy (as per the analysis in ANALYSIS.md). The Networking domain is designed as an interface, but in this iteration it is simulated by the logging module. This was done to ensure 100% stability of the analytics core and unit tests before deploying the transport layer.
+
 Documentation of 13 Requirements
 1. GIT Basics
 Description: I implemented a standard Git workflow using feature branches to maintain the integrity of the main branch.

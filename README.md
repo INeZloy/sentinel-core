@@ -13,6 +13,7 @@ Diagrams:
 Use-Case: User monitors vitals via the Edge Node. diagram-1 in image folder.
 Class Diagram:
 
+```mermaid
 classDiagram
     class Vitals {
         +int heart_rate
@@ -29,6 +30,7 @@ classDiagram
     }
     Vitals *-- Location : contains
     Vitals --> Main : data flow
+```
     
 Activity Diagram: In image folder diagram-2 - Logic flow from "Read Sensor" to "Threshold Check" to "Alert".
 

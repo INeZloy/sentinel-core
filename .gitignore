@@ -1,0 +1,4 @@
+*.o
+*.exe
+sentinel
+runner_tests

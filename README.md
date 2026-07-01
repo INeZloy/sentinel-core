@@ -44,9 +44,6 @@ Evidence: Compare legacy.c and vitals.c.
 Tool: Makefile.
 Functionality: My Makefile automates compilation with strict flags (-Wall -Wextra -Werror). It supports make all, make test for the QA suite, and make clean.
 Evidence: Makefile.
-11. CONTINUOUS DELIVERY (CI/CD)
-Tool: GitHub Actions.
-Workflow: Every push to GitHub triggers an automated Ubuntu-based runner that compiles the C code and executes the test suite.
 12. UNIT TESTS
 Implementation: I wrote a custom test suite in tests.c using the C assert.h library.
 Coverage: It verifies the tachycardia detection logic and the hyperglycemic alert triggers.

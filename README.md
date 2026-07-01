@@ -11,8 +11,8 @@ Evidence: In image folder.
 Description: I designed three major diagrams to model the system architecture.
 Diagrams:
 Use-Case: User monitors vitals via the Edge Node. diagram-1 in image folder.
-Class Diagram: (Implemented via Mermaid in README)
-code
+Class Diagram:
+
 Mermaid
 classDiagram
     class Vitals { +int heart_rate, +float sugar_level, +Location pos }

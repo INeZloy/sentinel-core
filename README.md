@@ -19,36 +19,45 @@ classDiagram
     class Main { +emergency_handler() }
     Vitals --> Main : data flow
 Activity Diagram: In image folder diagram-2 - Logic flow from "Read Sensor" to "Threshold Check" to "Alert".
+
 4. REQUIREMENTS
 Tool: I used Trello to manage tasks.
 AI Usage: I used AI to generate 10 standard medical IoT requirements. (Prompt: "What are the top 10 safety requirements for an embedded pulse monitor?").
+
 5. ANALYSIS (Startup Case)
 Idea: "Sentinel-Health" — a robotic AI-integrated companion for dementia patients based on the PARO seal from Futurium.
 Full Analysis: See ANALYSIS.md.
 AI Usage: LLM helped structure the SWOT analysis and market data for Germany. (Prompt: "Analyze the AAL market in Germany 2025 for an IoT startup").
+
 6. DDD (Domain Driven Design)
 Core Domain: VitalsAnalytics (The logic that decides if a patient is in danger).
 Supporting Domain: Networking (The POSIX Socket implementation).(WIP)
 Generic Domain: Logging (Colorized terminal output).
+
 7. METRICS
 Metric 1: Strict Static Analysis. I used the GCC compiler with -Wall -Wextra -Werror flags. This metric ensures "Zero Defects" policy — the project will not compile if there is even a minor style or logic warning. Status: 100% Clean.
 Metric 2: Cyclomatic Complexity Reduction. In the initial legacy.c, all logic was in a single main() block. Through refactoring, I decomposed the system into 4 small, atomic functions. This reduced the complexity score per function significantly, making the code easier to maintain and test (as shown in my Unit Tests).
 Evidence: In image folder
+
 8. CLEAN CODE DEVELOPMENT (CCD)
 Implementation: I avoided "Magic Numbers" by using #define MAX_PULSE 100, used meaningful naming conventions, and kept functions under 20 lines.
 Cheat Sheet: See my personal 10-point CCD_CheatSheet.md.
+
 9. REFACTORING
 Process: I moved from a monolithic legacy.c (where everything was in main) to a modular structure (vitals.c, vitals.h).
 Benefit: This separation allowed me to run unit tests on the logic without starting the full simulation loop.
 Evidence: Compare legacy.c and vitals.c.
+
 10. BUILD Management
 Tool: Makefile.
 Functionality: My Makefile automates compilation with strict flags (-Wall -Wextra -Werror). It supports make all, make test for the QA suite, and make clean.
 Evidence: Makefile.
+
 12. UNIT TESTS
 Implementation: I wrote a custom test suite in tests.c using the C assert.h library.
 Coverage: It verifies the tachycardia detection logic and the hyperglycemic alert triggers.
 Evidence: Run make test. Output: 100% STABLE.
+
 13. FUNCTIONAL PROGRAMMING
 Concepts applied in C:
 Immutability: Used const fields in struct Vitals to prevent side effects.

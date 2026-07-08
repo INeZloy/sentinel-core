@@ -1,5 +1,6 @@
 #include "vitals.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 Vitals generate_mock_data(int id) {
     Location current_pos = { (float)rand()/(float)(RAND_MAX/10), (float)rand()/(float)(RAND_MAX/10) };
@@ -16,4 +17,14 @@ Vitals generate_mock_data(int id) {
 void analyze_vitals(Vitals v, void (*alert_plugin)(const char* reason)) {
     if (v.heart_rate > MAX_PULSE) alert_plugin("TACHYCARDIA_EVENT");
     if (v.sugar_level > MAX_SUGAR) alert_plugin("HYPERGLYCEMIA_WARNING");
+}
+void export_to_json(Vitals v) {
+    FILE *f = fopen("../dashboard/public/data.json", "w");
+    if (f == NULL) {
+        printf("Error: Could not open file for writing!\n");
+        return;
+    }
+    fprintf(f, "{\"heart_rate\": %d, \"sugar\": %.1f, \"timestamp\": %lld}", 
+            v.heart_rate, v.sugar_level, (long long)v.timestamp);
+    fclose(f);
 }

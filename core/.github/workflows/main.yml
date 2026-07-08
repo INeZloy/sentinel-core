@@ -1,0 +1,51 @@
+name: Sentinel-Core CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # ЭТАП 1: Сборка и тестирование C-Core
+  build-and-test-c:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install GCC Compiler
+        run: sudo apt-get install -y gcc make
+
+      - name: Build Sentinel Core
+        run: |
+          cd core
+          gcc -Wall -Wextra -Werror -std=c11 main.c vitals.c -o sentinel
+          
+      - name: Run Unit Tests
+        run: |
+          cd core
+          gcc -Wall -Wextra -Werror -std=c11 tests.c vitals.c -o runner_tests
+          ./runner_tests
+
+  # ЭТАП 2: Сборка Фронтенда (Dashboard)
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dashboard Dependencies
+        run: |
+          cd dashboard
+          npm install
+
+      - name: Build Dashboard
+        run: |
+          cd dashboard
+          npm run build

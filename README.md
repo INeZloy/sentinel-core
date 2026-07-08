@@ -10,7 +10,7 @@
 | 6 | **Clean Code Development** | [CCD_CheatSheet.md](./documents/CCD_CheatSheet.md) |
 | 7 | **Refactoring** | [REFACTORING.md](./documents/REFACORING.md) |
 | 8 | **Testing (Unit & Mock)** | [tests.c](./core/tests.c) |
-| 9 | **Build Management** | [Makefile](./core/Makefile) |
+| 9 | **Build Management** | [build.bat](./core/build.bat) |
 | 10| **Continuous Delivery** | [.github/workflows/main.yml](./.github/workflows/main.yml) |
 | 11| **Metrics** | [METRICS.md](./documents/METRICS.md) |
 | 12| **Architecture Canvas** | [ARCHITECTURE.md](./documents/ARCHITECTURE.md) |

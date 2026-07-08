@@ -20,6 +20,7 @@ After (vitals.c):
 #define MAX_PULSE 100
 // ...
 if (v.heart_rate > MAX_PULSE) alert_plugin("TACHYCARDIA_EVENT");
+```
 Improvement Impact
 Testability: I can now pass "mock" data to analyze_vitals and verify alerts in milliseconds using tests.c.
 Extensibility: Adding a new sensor (e.g., blood pressure) only requires updating the struct and one function, not the entire main loop.

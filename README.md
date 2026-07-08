@@ -134,3 +134,6 @@ Personal SE Experiences & Mistakes
 Git Failure: During a merge, I corrupted the vitals.h file. I used git reflog to find the stable state before the mess and git reset --hard to recover.
 Build Failure: The Windows environment didn't have make installed. I documented this in METRICS.md and provided a build.bat workaround.
 Clean Code: I refactored the legacy.c (monolith) into a modular structure, which allowed me to implement Requirement #8 (Unit Testing) effectively.
+"CI/CD Failure & Recovery Experience:"
+"My initial pipeline failed because the Next.js Dashboard required Node.js >= 20.9.0, but the runner was configured with version 18. I analyzed the logs, identified the version mismatch, and updated the .yml configuration. This is a real-world example of maintaining a Continuous Delivery pipeline."![alt text](.images/image-5.png)
+Also I encountered a compiler error in GitHub Actions because usleep is a POSIX extension, not part of the strict ISO C11 standard. The compiler flagged it as an 'implicit declaration' because I used the -std=c11 flag with strict warnings. I resolved this by defining the _DEFAULT_SOURCE macro, which tells the compiler to allow POSIX functions. This taught me about the difference between language standards and platform-specific APIs.

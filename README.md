@@ -3,7 +3,7 @@
 | # | Task Topic | Links |
 |---|------------|-------|
 | 1 | **GIT & Time-Travel** | [Screenshot](./images/image-1.png) |
-| 2 | **Requirements & Constitution**  | [CONSTITUTION.md](./CONSTITUTION.md) |
+| 2 | **Requirements & Constitution**  | [CONSTITUTION.md](./documents/CONSTITUTION.md) |
 | 3 | **Classic & AI Analysis** | [MARKET_ANALYSIS.md](./documents/Germany_AAL_Market_Analysis_2025.md) |
 | 4 | **UML Diagrams** | *See below in README* |
 | 5 | **DDD (Domain Driven Design)** | *See below in README* |

@@ -2,9 +2,9 @@
 
 | # | Task Topic | Links |
 |---|------------|-------|
-| 1 | **GIT & Time-Travel** | [GIT_EXP.md](./documents/GIT_EXP.md) |
+| 1 | **GIT & Time-Travel** | [Screenshot](./images/image-1.png) |
 | 2 | **Requirements & Constitution**  | [CONSTITUTION.md](./CONSTITUTION.md) |
-| 3 | **Classic & AI Analysis** | [MARKET_ANALYSIS.md](./documents/analysis/Germany_AAL_Market_Analysis_2025.md) |
+| 3 | **Classic & AI Analysis** | [MARKET_ANALYSIS.md](./documents/Germany_AAL_Market_Analysis_2025.md) |
 | 4 | **UML Diagrams** | *See below in README* |
 | 5 | **DDD (Domain Driven Design)** | *See below in README* |
 | 6 | **Clean Code Development** | [CCD_CheatSheet.md](./documents/CCD_CheatSheet.md) |

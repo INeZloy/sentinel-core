@@ -21,7 +21,7 @@
 ## 4. UML Diagrams (Requirement #4)
 
 ### A. Class Diagram
-A. Class Diagram (Requirement #4)
+A. Class Diagram 
 
 ```mermaid
 classDiagram
@@ -43,42 +43,48 @@ classDiagram
     Vitals *-- Location
     Analyzer ..> Vitals : processes
 ```
-B. Use-Case Diagram (The $10M Scale)
+B. Use-Case Diagram
 ```mermaid
-graph TD
-    Patient["Elderly Patient"]
-    Doctor["Medical Doctor"]
-    Admin["System Administrator"]
-    Sensor["Bio-Sensor Hardware"]
+graph LR
+    %% Actors
+    Patient(("Elderly Patient"))
+    Doctor(("Medical Doctor"))
+    Admin(("System Administrator"))
+    Sensor[/"Bio-Sensor Hardware"/]
 
-    subgraph Sentinel_Core_System
+    %% System Boundary
+    subgraph Sentinel_Core_System ["Sentinel Core (Medical Engine)"]
         UC1[Monitor Heart Rate]
         UC2[Monitor Sugar Levels]
         UC3[Track GPS Location]
-        UC4[Detect Abnormalities]
+        UC4{Detect Abnormalities}
         UC5[Trigger Emergency Alert]
         UC6[Export Telemetry to JSON]
         UC7[View Dashboard]
         UC8[Configure Thresholds]
         UC9[System Self-Diagnostics]
-        UC10[Log Vital History]
-        UC11[Analyze Trend Data]
     end
 
+    %% Relationships
     Sensor --> UC1
     Sensor --> UC2
-    Patient --> UC1
-    Patient --> UC7
+    Patient --- UC1
+    Patient --- UC7
+    
     UC1 --> UC4
     UC2 --> UC4
+    UC3 --> UC6
+    
     UC4 --> UC5
-    UC5 --> Doctor
+    UC5 --- Doctor
+    
     UC6 --> UC7
-    Admin --> UC8
-    Admin --> UC9
-    UC10 --> UC11
+    
+    Admin --- UC8
+    Admin --- UC9
+    UC8 --> UC4
 ```
-C. Activity Diagram (Logic Flow)
+C. Activity Diagram
 ```mermaid
 stateDiagram-v2
     [*] --> InitializeSystem
@@ -107,8 +113,7 @@ Core Domain: VitalsAnalytics (High-priority logic for life-saving alerts).
 Supporting Domain: Networking (Data transfer via simulated JSON space).
 Generic Domain: Logging/UI (Standard dashboard components).
 Bounded Context Map
-code
-Mermaid
+```mermaid
 graph TD
     subgraph Monitoring_Context
         A[Sensor Module] --> B[Analysis Engine]
@@ -117,8 +122,9 @@ graph TD
         C[Emergency Dispatcher]
     end
     Monitoring_Context -- "Shared Kernel (JSON)" --> Notification_Context
+```
 13. VIBE CODING & DISTRIBUTED APP (Requirement #13)
-This project has been transformed into a Distributed System using Agentic Coding (Bolt.new / AI Agents).
+This project has been transformed into a Distributed System using Agentic Coding (v0.app / AI Agents).
 Core Module (C): High-performance embedded engine for data processing.
 Dashboard Module (Next.js/TS): A modern visualization layer for healthcare providers.
 Evidence of Vibe Coding Process: VIBE_LOG.md

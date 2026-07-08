@@ -21,6 +21,8 @@
 ## 4. UML Diagrams (Requirement #4)
 
 ### A. Class Diagram
+A. Class Diagram (Requirement #4)
+
 ```mermaid
 classDiagram
     class Vitals {
@@ -40,32 +42,65 @@ classDiagram
     }
     Vitals *-- Location
     Analyzer ..> Vitals : processes
-B. Use-Case Diagram
-code
-Mermaid
-graph LR
-    User((Elderly Patient)) --> Monitor[Monitor Vitals]
-    User --> Alerts[Receive Alerts]
-    System((Sentinel Core)) --> Monitor
-    System --> Analyze[Run Tachycardia Check]
-    Analyze --> Alerts
-    Doctor((Doctor/Caregiver)) --> Alerts
-C. Activity Diagram (Alert Logic)
-code
-Mermaid
+```
+B. Use-Case Diagram (The $10M Scale)
+```mermaid
+graph TD
+    Patient["Elderly Patient"]
+    Doctor["Medical Doctor"]
+    Admin["System Administrator"]
+    Sensor["Bio-Sensor Hardware"]
+
+    subgraph Sentinel_Core_System
+        UC1[Monitor Heart Rate]
+        UC2[Monitor Sugar Levels]
+        UC3[Track GPS Location]
+        UC4[Detect Abnormalities]
+        UC5[Trigger Emergency Alert]
+        UC6[Export Telemetry to JSON]
+        UC7[View Dashboard]
+        UC8[Configure Thresholds]
+        UC9[System Self-Diagnostics]
+        UC10[Log Vital History]
+        UC11[Analyze Trend Data]
+    end
+
+    Sensor --> UC1
+    Sensor --> UC2
+    Patient --> UC1
+    Patient --> UC7
+    UC1 --> UC4
+    UC2 --> UC4
+    UC4 --> UC5
+    UC5 --> Doctor
+    UC6 --> UC7
+    Admin --> UC8
+    Admin --> UC9
+    UC10 --> UC11
+```
+C. Activity Diagram (Logic Flow)
+```mermaid
 stateDiagram-v2
-    [*] --> ReadSensors
-    ReadSensors --> CheckThresholds
+    [*] --> InitializeSystem
+    InitializeSystem --> ReadSensorData
+    ReadSensorData --> CheckThresholds
+    
     state CheckThresholds {
         [*] --> PulseCheck
-        PulseCheck --> HighPulse : > 100
-        PulseCheck --> LowPulse : < 60
-        PulseCheck --> NormalPulse
+        PulseCheck --> Tachycardia : Pulse > 100
+        PulseCheck --> Bradycardia : Pulse < 60
+        PulseCheck --> Normal
     }
-    HighPulse --> TriggerAlert
-    LowPulse --> TriggerAlert
-    TriggerAlert --> LogToJson
-    LogToJson --> [*]
+    
+    Tachycardia --> FireAlert
+    Bradycardia --> FireAlert
+    Normal --> SaveLog
+    
+    FireAlert --> CallbackHandler
+    CallbackHandler --> ExportJSON
+    SaveLog --> ExportJSON
+    ExportJSON --> [*]
+```
 5. DDD - Domain Driven Design (Requirement #5)
 Core Domain Chart
 Core Domain: VitalsAnalytics (High-priority logic for life-saving alerts).

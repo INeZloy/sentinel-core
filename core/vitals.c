@@ -18,13 +18,17 @@ void analyze_vitals(Vitals v, void (*alert_plugin)(const char* reason)) {
     if (v.heart_rate > MAX_PULSE) alert_plugin("TACHYCARDIA_EVENT");
     if (v.sugar_level > MAX_SUGAR) alert_plugin("HYPERGLYCEMIA_WARNING");
 }
-void export_to_json(Vitals v) {
-    FILE *f = fopen("../dashboard/public/data.json", "w");
+int export_to_json(Vitals v) {
+    const char *path = getenv("SENTINEL_JSON_PATH");
+    if (path == NULL) path = "../dashboard/public/data.json";
+
+    FILE *f = fopen(path, "w");
     if (f == NULL) {
-        printf("Error: Could not open file for writing!\n");
-        return;
+        fprintf(stderr, "export_to_json: could not open '%s' for writing\n", path);
+        return -1;
     }
-    fprintf(f, "{\"heart_rate\": %d, \"sugar\": %.1f, \"timestamp\": %lld}", 
+    fprintf(f, "{\"heart_rate\": %d, \"sugar\": %.1f, \"timestamp\": %lld}",
             v.heart_rate, v.sugar_level, (long long)v.timestamp);
     fclose(f);
+    return 0;
 }

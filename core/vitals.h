@@ -20,4 +20,5 @@ typedef struct {
 
 void analyze_vitals(Vitals v, void (*alert_plugin)(const char* reason));
 Vitals generate_mock_data(int id);
+int export_to_json(Vitals v);
 #endif

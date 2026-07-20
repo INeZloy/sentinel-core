@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sentinel Messenger</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --panel: #171a23;
+    --accent: #5b8cff;
+    --text: #e8eaf0;
+    --muted: #7d8399;
+    --bubble-me: #2b3a67;
+    --bubble-them: #232734;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #app {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    max-height: 780px;
+    background: var(--panel);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #262b38;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 { font-size: 16px; margin: 0; }
+  #status { font-size: 12px; color: var(--muted); }
+  #status.online { color: #4ade80; }
+  #login {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    flex: 1;
+  }
+  input, button {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #2b3040;
+    background: #10131b;
+    color: var(--text);
+    font-size: 14px;
+  }
+  button {
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  button:hover { opacity: 0.9; }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .msg {
+    max-width: 75%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .msg.me { align-self: flex-end; background: var(--bubble-me); }
+  .msg.them { align-self: flex-start; background: var(--bubble-them); }
+  .msg .meta { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .system { text-align: center; font-size: 12px; color: var(--muted); margin: 4px 0; }
+  #composer {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid #262b38;
+  }
+  #composer input { flex: 1; }
+  #hidden { display: none; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>🛰️ Sentinel Messenger</h1>
+    <span id="status">connecting…</span>
+  </header>
+
+  <div id="login">
+    <p style="color:var(--muted); font-size:13px;">
+      This client is a separate deployable module. It talks to the backend
+      only over WebSocket — set the server URL below (or via
+      <code>?server=wss://your-backend</code> in the URL).
+    </p>
+    <input id="serverUrl" placeholder="wss://your-backend.onrender.com/ws" />
+    <input id="username" placeholder="Your name" />
+    <button id="joinBtn">Join chat</button>
+  </div>
+
+  <div id="chat" class="hidden" style="display:none; flex:1; flex-direction:column; min-height:0;">
+    <div id="messages"></div>
+    <div id="composer">
+      <input id="textInput" placeholder="Type a message…" />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const qs = new URLSearchParams(location.search);
+  const statusEl = document.getElementById('status');
+  const loginEl = document.getElementById('login');
+  const chatEl = document.getElementById('chat');
+  const messagesEl = document.getElementById('messages');
+  const serverUrlInput = document.getElementById('serverUrl');
+  const usernameInput = document.getElementById('username');
+
+  serverUrlInput.value = qs.get('server') || localStorage.getItem('serverUrl') || '';
+  usernameInput.value = localStorage.getItem('username') || '';
+
+  let ws = null;
+  let myUsername = '';
+
+  function addSystem(text) {
+    const div = document.createElement('div');
+    div.className = 'system';
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function addMessage(msg) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (msg.from === myUsername ? 'me' : 'them');
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = msg.from + ' · ' + new Date(msg.ts).toLocaleTimeString();
+    const body = document.createElement('div');
+    body.textContent = msg.text;
+    div.appendChild(meta);
+    div.appendChild(body);
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  document.getElementById('joinBtn').addEventListener('click', () => {
+    const url = serverUrlInput.value.trim();
+    myUsername = usernameInput.value.trim() || 'anon';
+    if (!url) { alert('Server URL required'); return; }
+
+    localStorage.setItem('serverUrl', url);
+    localStorage.setItem('username', myUsername);
+
+    ws = new WebSocket(url);
+
+    ws.onopen = () => {
+      statusEl.textContent = 'online';
+      statusEl.classList.add('online');
+      ws.send(JSON.stringify({ type: 'join', username: myUsername }));
+      loginEl.style.display = 'none';
+      chatEl.style.display = 'flex';
+    };
+
+    ws.onmessage = (evt) => {
+      const msg = JSON.parse(evt.data);
+      if (msg.type === 'system') addSystem(msg.text);
+      if (msg.type === 'message') addMessage(msg);
+    };
+
+    ws.onclose = () => {
+      statusEl.textContent = 'disconnected';
+      statusEl.classList.remove('online');
+    };
+
+    ws.onerror = () => {
+      statusEl.textContent = 'connection error';
+    };
+  });
+
+  function send() {
+    const input = document.getElementById('textInput');
+    const text = input.value.trim();
+    if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({ type: 'message', text }));
+    input.value = '';
+  }
+
+  document.getElementById('sendBtn').addEventListener('click', send);
+  document.getElementById('textInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') send();
+  });
+</script>
+</body>
+</html>

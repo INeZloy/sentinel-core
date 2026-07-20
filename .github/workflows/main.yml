@@ -14,18 +14,27 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install GCC Compiler
-        run: sudo apt-get install -y gcc make
+      - name: Install GCC + CMocka + cppcheck
+        run: sudo apt-get update && sudo apt-get install -y gcc make libcmocka-dev cppcheck
+
+      - name: Lint (quality gate for METRICS.md)
+        run: |
+          cd core
+          gcc -Wall -Wextra -Wpedantic -Wshadow -Wconversion -std=c11 -c vitals.c -o /tmp/vitals.o
+          gcc -Wall -Wextra -Wpedantic -Wshadow -Wconversion -std=c11 -c main.c -o /tmp/main.o
+
+      - name: Static analysis (cppcheck)
+        run: cppcheck --enable=warning,style,performance --error-exitcode=1 core/
 
       - name: Build Sentinel Core
         run: |
           cd core
           gcc -Wall -Wextra -Werror -std=c11 main.c vitals.c -o sentinel
-          
-      - name: Run Unit Tests
+
+      - name: Build & Run Unit Tests (CMocka)
         run: |
           cd core
-          gcc -Wall -Wextra -Werror -std=c11 tests.c vitals.c -o runner_tests
+          gcc -std=c11 -D_DEFAULT_SOURCE tests.c vitals.c -lcmocka -Wl,--wrap=fopen -o runner_tests
           ./runner_tests
 
   # ЭТАП 2: Сборка Фронтенда (Dashboard)
@@ -49,3 +58,24 @@ jobs:
         run: |
           cd dashboard
           npm run build
+
+  # ЭТАП 3: Сборка и проверка второго pet-проекта (AGENTIC_PROJECT)
+  build-messenger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.9.0'
+
+      - name: Install & sanity-check server
+        run: |
+          cd AGENTIC_PROJECT/server
+          npm install
+          node --check server.js
+
+      - name: Run Functional Programming demo
+        run: node AGENTIC_PROJECT/functional-demo.js

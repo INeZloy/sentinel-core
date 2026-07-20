@@ -22,6 +22,10 @@ int main() {
 
         analyze_vitals(data, emergency_handler);
 
+        if (export_to_json(data) != 0) {
+            printf(" [json export skipped]");
+        }
+
         printf("\n");
         usleep(400000);
     }

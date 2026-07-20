@@ -1,72 +1,75 @@
 # GIT & Time-Travel — Branch/Merge Evidence (Requirement #1)
 
-Реальный сценарий: используем найденный баг (отсутствует проверка bradycardia)
-как повод для полноценной ветки — это и осмысленно, и даёт материал для CCD/REF.
+Real scenario: using the bradycardia-check bug found during this project
+(missing `MIN_PULSE` check in `analyze_vitals`) as the basis for a proper
+feature branch — meaningful on its own, and it also feeds the CCD/REF
+requirements.
 
-## Команды (выполнить в корне репозитория, локально)
+## Commands (run from the repository root, locally)
 
 ```bash
-# 1. Убедиться, что main чистый
+# 1. Make sure main is clean
 git checkout main
 git pull
 
-# 2. Создать ветку под фичу
+# 2. Create a feature branch
 git checkout -b feature/bradycardia-check
 
-# 3. Внести правку в core/vitals.c — добавить недостающую проверку
-#    (см. блок "После" ниже)
+# 3. Edit core/vitals.c to add the missing check (see "After" below)
 
 git add core/vitals.c
 git commit -m "fix(core): add missing bradycardia threshold check
 
 MIN_PULSE was defined in vitals.h but never checked in analyze_vitals.
 Adds the missing branch + BRADYCARDIA_EVENT alert reason.
-Closes gap documented in VALIDATION.md."
+Closes the gap documented in VALIDATION.md."
 
-# 4. Сделать скриншот `git log --oneline --graph --all` ЗДЕСЬ,
-#    пока веток две — это и есть требуемый "time-travel" момент
+# 4. Screenshot `git log --oneline --graph --all` HERE, while there are
+#    two branches — this is the required "time-travel" evidence moment
 
 git log --oneline --graph --all
 
-# 5. Вернуться на main и смерджить
+# 5. Switch back to main and merge
 git checkout main
 git merge feature/bradycardia-check
 
-# 6. Скриншот после мерджа (одна линия истории, коммит фичи внутри main)
+# 6. Screenshot after the merge (single history line, feature commit now
+#    inside main)
 git log --oneline --graph --all
 
-# 7. (опционально, но красиво для оценки) удалить смердженную ветку
+# 7. (optional, but clean) delete the merged branch
 git branch -d feature/bradycardia-check
 ```
 
-## Что положить как скриншот (замена/дополнение к images/image-1.png)
+## What to include as screenshots (replacing/supplementing images/image-1.png)
 
-1. Скриншот `git branch -a` — видно `main` и `feature/bradycardia-check` одновременно.
-2. Скриншот `git log --oneline --graph --all` **до** мерджа (два расходящихся пути).
-3. Скриншот `git log --oneline --graph --all` **после** мерджа (пути сошлись).
+1. `git branch -a` — showing both `main` and `feature/bradycardia-check` at once.
+2. `git log --oneline --graph --all` **before** the merge (two diverging paths).
+3. `git log --oneline --graph --all` **after** the merge (paths converged).
 
-Если хочется показать ещё и **conflict resolution** (это прямо усиливает
-оценку по этому пункту) — можно специально смоделировать конфликт:
+To go further and demonstrate **conflict resolution** (this strengthens
+this section considerably), you can deliberately create a conflict:
 
 ```bash
-# на main
+# on main
 git checkout main
 echo "// main-side comment" >> core/vitals.c
 git commit -am "docs(core): add comment on main"
 
-# на feature-ветке правьте ту же строку по-другому, затем при мердже:
+# edit the same line differently on the feature branch, then on merge:
 git checkout main
 git merge feature/bradycardia-check
 # CONFLICT (content): Merge conflict in core/vitals.c
-# -> открыть файл, вручную разрешить <<<<<<< / ======= / >>>>>>>
+# -> open the file, manually resolve the <<<<<<< / ======= / >>>>>>> markers
 git add core/vitals.c
 git commit -m "merge: resolve conflict in vitals.c (keep both changes)"
 ```
 
-Скриншот терминала с текстом `CONFLICT (content): Merge conflict` — это
-именно то, что закрывает "no branch/merge" в фидбеке максимально явно.
+A terminal screenshot showing `CONFLICT (content): Merge conflict` is
+exactly the kind of evidence that closes the "no branch/merge" feedback
+unambiguously.
 
-## "После" — код правки (для коммита выше)
+## "After" — the actual code change (for the commit above)
 
 ```c
 void analyze_vitals(Vitals v, void (*alert_plugin)(const char* reason)) {
@@ -76,6 +79,6 @@ void analyze_vitals(Vitals v, void (*alert_plugin)(const char* reason)) {
 }
 ```
 
-(Не забудьте добавить `tests.c :: test_bradycardia_triggers_alert` по
-аналогии с `test_tachycardia_triggers_alert` — ещё один тест, ещё один
-повод для чистого коммита.)
+(Don't forget to add `tests.c :: test_bradycardia_triggers_alert`,
+mirroring `test_tachycardia_triggers_alert` — another clean, focused
+commit.)

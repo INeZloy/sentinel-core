@@ -12,6 +12,7 @@
 #include <setjmp.h>
 #include <cmocka.h>
 #include <string.h>
+#include <stdio.h>
 #include "vitals.h"
 
 /* ---------------------------------------------------------------------
@@ -103,7 +104,7 @@ FILE *__wrap_fopen(const char *path, const char *mode) {
     return NULL; /* simulate: disk full / permission denied / bad path */
 }
 
-void export_to_json(Vitals v); /* declared in vitals.c, not yet in vitals.h */
+/* export_to_json is already declared in vitals.h (returns int) */
 
 static void test_export_json_handles_fopen_failure(void **state) {
     (void)state;
